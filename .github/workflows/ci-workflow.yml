@@ -1,10 +1,28 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
 
 jobs:
   job_build:
     name: Compilation
+    strategy:
+      matrix:
+        include:
+          - model: nanos
+            SDK: "$NANOS_SDK"
+          - model: nanox
+            SDK: "$NANOX_SDK"
+          - model: nanosp
+            SDK: "$NANOSP_SDK"
+
     runs-on: ubuntu-latest
 
     container:
@@ -16,54 +34,10 @@ jobs:
 
       - name: Build
         run: |
-          make && mv bin/ bitcoin-bin/
-          make clean
-          make COIN=bitcoin_testnet && mv bin/ bitcoin-testnet-bin/
+          make DEBUG=0 COIN=avian BOLOS_SDK=${{ matrix.SDK }} && mv bin/ avian-bin/
 
-      - name: Upload Bitcoin app binary
+      - name: Upload Avian app binary
         uses: actions/upload-artifact@v2
         with:
-          name: bitcoin-app
-          path: bitcoin-bin
-
-      - name: Upload Bitcoin Testnet app binary
-        uses: actions/upload-artifact@v2
-        with:
-          name: bitcoin-testnet-app
-          path: bitcoin-testnet-bin
-
-  job_test:
-    name: Tests
-    needs: job_build
-    runs-on: ubuntu-latest
-
-    container:
-      image: ghcr.io/ledgerhq/speculos:latest
-      ports:
-        - 1234:1234
-        - 9999:9999
-        - 40000:40000
-        - 41000:41000
-        - 42000:42000
-        - 43000:43000
-      options: --entrypoint /bin/bash
-
-    steps:
-      - name: Clone
-        uses: actions/checkout@v2
-
-      - name: Download Bitcoin app binary
-        uses: actions/download-artifact@v2
-        with:
-          name: bitcoin-app
-          path: tests/bitcoin-bin
-
-      - name: Download Bitcoin Testnet app binary
-        uses: actions/download-artifact@v2
-        with:
-          name: bitcoin-testnet-app
-          path: tests/bitcoin-testnet-bin
-
-      - name: Run tests
-        run: |
-          cd tests && pip install -r requirements.txt && SPECULOS=/speculos/speculos.py pytest
+          name: avian-app-${{ matrix.model }}
+          path: avian-bin

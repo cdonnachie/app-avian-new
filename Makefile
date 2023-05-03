@@ -197,6 +197,11 @@ else ifeq ($(COIN),hydra)
 DEFINES   += BIP44_COIN_TYPE=0 BIP44_COIN_TYPE_2=0 COIN_P2PKH_VERSION=40 COIN_P2SH_VERSION=63 COIN_FAMILY=3 COIN_COINID=\"Hydra\" COIN_COINID_HEADER=\"HYDRA\" COIN_COLOR_HDR=0x2E9AD0 COIN_COLOR_DB=0x97CDE8 COIN_COINID_NAME=\"HYDRA\" COIN_COINID_SHORT=\"HYDRA\" COIN_NATIVE_SEGWIT_PREFIX=\"hc\" COIN_KIND=COIN_KIND_HYDRA COIN_FLAGS=FLAG_SEGWIT_CHANGE_SUPPORT
 APPNAME ="Hydra"
 APP_LOAD_PARAMS += --path "44'/609'"
+else ifeq ($(COIN),avian)
+# Avian
+DEFINES   += BIP44_COIN_TYPE=921 BIP44_COIN_TYPE_2=921 COIN_P2PKH_VERSION=60 COIN_P2SH_VERSION=122 COIN_FAMILY=1 COIN_COINID=\"Avian\" COIN_COINID_HEADER=\"AVIAN\" COIN_COLOR_HDR=0x19827A COIN_COLOR_DB=0x34F5C6 COIN_COINID_NAME=\"Avian\" COIN_COINID_SHORT=\"AVN\" COIN_KIND=COIN_KIND_AVIAN COIN_FORKID=64
+APPNAME ="Ravencoin"
+APP_LOAD_PARAMS += --path $(APP_PATH)
 else
 ifeq ($(filter clean,$(MAKECMDGOALS)),)
 $(error Unsupported COIN - use bitcoin_testnet, bitcoin, bitcoin_cash, bitcoin_gold, litecoin, dogecoin, dash, zcash, horizen, komodo, stratis, peercoin, pivx, viacoin, vertcoin, stealth, digibyte, qtum, bitcoin_private, firo, gamecredits, zclassic, xsn, nix, lbry, resistance, ravencoin, hydra, hydra_testnet, xrhodium)
